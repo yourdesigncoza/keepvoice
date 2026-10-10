@@ -129,13 +129,14 @@ function execute(actions) {
     }
 
     let list = a.list ? findList(a.list) : currentList();
-    if (!list && a.type === 'add') list = createList(a.list || 'Shopping list');
+    let created = false;
+    if (!list && a.type === 'add') { list = createList(a.list || 'Shopping list'); created = true; }
     if (!list) { msgs.push('Open a list first'); continue; }
     const items = Array.isArray(a.items) ? a.items : [];
 
     if (a.type === 'add') {
       const { added, dupes } = addItems(list, items);
-      if (added.length) msgs.push(`Added ${added.join(', ')} to ${list.name}`);
+      if (added.length) msgs.push(`Added ${added.join(', ')} to ${created ? 'new list ' : ''}${list.name}`);
       if (dupes.length) msgs.push(`${dupes.join(', ')} already on list`);
     } else if (a.type === 'tick' || a.type === 'remove' || a.type === 'untick') {
       const done = [], missing = [];
@@ -195,10 +196,16 @@ async function askModel(system, userContent) {
 async function interpret(text) {
   const system = `You convert a spoken shopping/todo command into JSON actions.
 Return ONLY {"actions":[...]}. Action types:
-{"type":"add","items":["milk","eggs"],"list":"Groceries"} (list optional = current)
+{"type":"add","items":["milk","eggs"],"list":"Groceries"}
 {"type":"tick","items":[...]} {"type":"untick","items":[...]} {"type":"remove","items":[...]}
 {"type":"new_list","name":"..."} {"type":"open_list","name":"..."} {"type":"clear"} {"type":"undo"}
-Plain product names with no verb mean add. Items are short noun phrases, no articles; keep brand and pack size when said.
+Plain product names with no verb mean add. Items are short noun phrases, no articles; keep brand, quantity and size when said.
+Routing: every add names a "list". If the user names a list ("to groceries", "on the braai list"), that list wins,
+whatever the item is. Otherwise put each item on the list whose kind fits it: food, drink and household consumables
+on a groceries/shopping list; screws, tools, paint, building supplies on a hardware list; tasks and errands on a
+to-do list; braai or party supplies on such a list if one exists. If the current list fits, use it. If no existing
+list fits, invent a short natural name ("Hardware", "To do") and the app will create it. Split one command into
+several add actions when items belong on different lists.
 Match tick/remove names to existing items when close. ${SA_NOTE}
 Context: ${JSON.stringify(listContext())}`;
   const out = await askModel(system, text);
