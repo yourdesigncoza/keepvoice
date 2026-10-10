@@ -479,6 +479,8 @@ dialog h2 { margin: 10px 10px 16px; font-size: 28px; font-weight: 300; }
 .field.check { display: flex; align-items: center; gap: 10px; }
 .field.check input { width: 20px; height: 20px; accent-color: var(--orange); }
 .field.check span { margin: 0; color: var(--text); font-size: 17px; text-transform: none; letter-spacing: 0; }
+.version { display: flex; align-items: center; justify-content: space-between; margin: 0 2px 0 10px; color: var(--muted); font-size: 15px; }
+.version b { color: var(--text); font-weight: 500; }
 .hint { margin: 4px 10px 12px; font-size: 15px; color: var(--muted); line-height: 1.5; }
 
 

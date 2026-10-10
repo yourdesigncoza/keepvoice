@@ -73,6 +73,10 @@
   </label>
   <p class="hint">Needed for voice understanding and photos. Without it, spoken words are added as typed.</p>
   <p class="hint">Try: "add milk, eggs and bread" · "tick off milk" · "remove eggs" · "new list hardware" · "open groceries" · "undo"</p>
+  <div class="version">
+    <span>Version <b id="set-version"></b></span>
+    <button id="update-btn" class="link-btn">Check for update</button>
+  </div>
   <div class="row">
     <button id="settings-close" class="link-btn">Close</button>
     <button id="settings-save" class="pill-btn">Save</button>
@@ -81,6 +85,7 @@
 
 <input id="import-file" type="file" accept="application/json" hidden>
 
+<script src="version.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

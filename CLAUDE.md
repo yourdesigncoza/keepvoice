@@ -19,8 +19,9 @@ There are no tests. Verify behaviour in a browser at phone width (412x915). `win
 `handleUtterance(text)`, `handlePhoto(file)`, `execute(actions)`, `state` for console-driven checks
 without a mic or camera.
 
-Every change that touches a cached asset needs a bump of `VERSION` in `sw.js` or installed phones keep the old
-files. The service worker is network-first, so the bump is what triggers the cache swap.
+Every deploy needs a bump of `KV_VERSION` in `version.js`. It is the only version string: `sw.js` imports it for the
+cache name (so the browser sees a changed worker and swaps caches) and Settings displays it. Without the bump,
+installed phones keep the old files.
 
 ## Architecture
 

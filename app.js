@@ -536,7 +536,26 @@ document.addEventListener('keydown', (e) => {
   if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.target.matches('input')) { e.preventDefault(); toast(undo() ? 'Undone' : 'Nothing to undo'); render(); }
 });
 
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
+// ---------- updates ----------
+// version.js is the single source of truth; sw.js imports the same file for its cache name.
+const VERSION = self.KV_VERSION || 'dev';
+$('#set-version').textContent = VERSION;
+if (localStorage.getItem('keepvoice.seen') !== VERSION) {
+  if (localStorage.getItem('keepvoice.seen')) toast(`Updated to ${VERSION}`);
+  localStorage.setItem('keepvoice.seen', VERSION);
+}
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js');
+  // The new worker calls skipWaiting + clients.claim; a reload here puts the new files on screen.
+  navigator.serviceWorker.addEventListener('controllerchange', () => location.reload());
+}
+$('#update-btn').addEventListener('click', async () => {
+  const reg = await navigator.serviceWorker?.getRegistration();
+  if (!reg) { toast('Not installed as an app'); return; }
+  toast('Checking…');
+  await reg.update();
+  if (!reg.installing && !reg.waiting) toast(`Up to date (${VERSION})`);
+});
 
 // exposed for console testing
 window.KeepVoice = { execute, state, handleUtterance, handlePhoto, fallbackActions };
