@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#202124">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>KeepVoice</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <button id="back-btn" class="icon-btn" hidden aria-label="Back">&#8592;</button>
+  <h1 id="title">KeepVoice</h1>
+  <button id="menu-btn" class="icon-btn" aria-label="Menu">&#8942;</button>
+</header>
+
+<main id="view"></main>
+
+<form id="add-form" class="add-bar" hidden autocomplete="off">
+  <input id="add-input" list="history-list" placeholder="Add item" enterkeyhint="done">
+  <datalist id="history-list"></datalist>
+  <button type="submit" class="icon-btn" aria-label="Add">+</button>
+</form>
+
+<button id="mic-btn" class="mic" aria-label="Voice">
+  <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-3.08A7 7 0 0 0 19 11h-2z"/></svg>
+</button>
+
+<div id="voice-panel" class="voice-panel" hidden>
+  <div id="voice-status">Listening…</div>
+  <div id="voice-text"></div>
+  <div class="row">
+    <button id="voice-cancel" class="text-btn">Cancel</button>
+  </div>
+</div>
+
+<div id="toast" class="toast" hidden></div>
+
+<dialog id="menu">
+  <button data-action="rename">Rename list</button>
+  <button data-action="color">Change colour</button>
+  <button data-action="clear-history">Clear history</button>
+  <button data-action="delete-list" class="danger">Delete list</button>
+  <hr>
+  <button data-action="settings">Settings</button>
+  <button data-action="export">Export JSON</button>
+  <button data-action="import">Import JSON</button>
+  <button data-action="close">Close</button>
+</dialog>
+
+<dialog id="settings">
+  <h2>Settings</h2>
+  <label class="field">
+    <span>Voice engine</span>
+    <select id="set-engine">
+      <option value="rules">Browser speech + rules (free)</option>
+      <option value="llm">Browser speech + OpenRouter LLM</option>
+    </select>
+  </label>
+  <label class="field">
+    <span>OpenRouter API key</span>
+    <input id="set-key" type="password" placeholder="sk-or-…">
+  </label>
+  <label class="field">
+    <span>LLM model</span>
+    <input id="set-model" placeholder="google/gemini-3.1-flash-lite">
+  </label>
+  <label class="field check">
+    <input id="set-read" type="checkbox"> <span>Speak confirmations</span>
+  </label>
+  <p class="hint">Say: "add milk, eggs and bread" · "tick off milk" · "remove eggs" · "new list hardware" · "open groceries" · "undo"</p>
+  <div class="row">
+    <button id="settings-save" class="text-btn">Save</button>
+    <button id="settings-close" class="text-btn">Close</button>
+  </div>
+</dialog>
+
+<input id="import-file" type="file" accept="application/json" hidden>
+
+<script src="app.js"></script>
+</body>
+</html>
