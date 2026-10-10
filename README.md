@@ -1,11 +1,13 @@
 # KeepVoice
 
-Single-user, voice-first list app in the spirit of Google Keep. Static PWA, no backend.
+Single-user shopping list in the spirit of Google Keep, with three ways in: type, speak, or photograph the product.
+Static PWA, no backend. Data stays on the phone.
 
-- Lists with checkable items. Ticked items move to a "Previously bought" strip and can be re-added with one tap.
-- Mic button uses the browser's speech recognition (Chrome on Android) plus a rule-based command parser.
-- Optional: route transcripts through an OpenRouter model for looser phrasing (Settings).
-- Data lives in `localStorage`; Export/Import JSON from the menu for backup.
+- Lists with tickable items. Ticked items move to "Bought before" and come back with one tap.
+- Mic: Chrome's speech recognition (`en-ZA`), then one OpenRouter call turns the words into list actions.
+- Camera: photo is shrunk on the phone and the same model names the product, brand and pack size.
+- Without an API key, or offline, spoken words are added as plain items.
+- Backup: Export / Import JSON from the menu. `seed.json` loads on first run; `#seed` merges it again without duplicates.
 
 ## Voice commands
 
@@ -21,4 +23,4 @@ Single-user, voice-first list app in the spirit of Google Keep. Static PWA, no b
 python3 -m http.server 8765
 ```
 
-Speech recognition needs HTTPS or `localhost`.
+Speech recognition and the camera need HTTPS or `localhost`.

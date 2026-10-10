@@ -3,81 +3,77 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#202124">
+<meta name="theme-color" content="#0a0a0b">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>KeepVoice</title>
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="preload" href="fonts/outfit-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <header class="topbar">
-  <button id="back-btn" class="icon-btn" hidden aria-label="Back">&#8592;</button>
-  <h1 id="title">KeepVoice</h1>
-  <button id="menu-btn" class="icon-btn" aria-label="Menu">&#8942;</button>
+  <button id="back-btn" class="icon-btn" hidden aria-label="Back">
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+  </button>
+  <span class="spacer"></span>
+  <button id="menu-btn" class="icon-btn" aria-label="Menu">
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg>
+  </button>
 </header>
 
 <main id="view"></main>
 
-<form id="add-form" class="add-bar" hidden autocomplete="off">
-  <input id="add-input" list="history-list" placeholder="Add item" enterkeyhint="done">
-  <datalist id="history-list"></datalist>
-  <button type="submit" class="icon-btn" aria-label="Add">+</button>
-</form>
+<div class="dock">
+  <form id="add-form" class="dock-input" hidden autocomplete="off">
+    <input id="add-input" list="history-list" placeholder="Add something" enterkeyhint="done" aria-label="Add item">
+    <datalist id="history-list"></datalist>
+    <button type="submit" class="dock-add" aria-label="Add">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+    </button>
+  </form>
+  <button id="photo-btn" class="dock-round" aria-label="Add from photo">
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>
+  </button>
+  <input id="photo-file" type="file" accept="image/*" capture="environment" hidden>
+  <button id="mic-btn" class="mic" aria-label="Speak">
+    <svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-3.08A7 7 0 0 0 19 11h-2z"/></svg>
+  </button>
+</div>
 
-<button id="mic-btn" class="mic" aria-label="Voice">
-  <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-3.08A7 7 0 0 0 19 11h-2z"/></svg>
-</button>
-
-<div id="voice-panel" class="voice-panel" hidden>
-  <div id="voice-status">Listening…</div>
-  <div id="voice-text"></div>
-  <div class="row">
-    <button id="voice-cancel" class="text-btn">Cancel</button>
-  </div>
+<div id="sheet" class="sheet" hidden>
+  <div class="sheet-eyebrow"><span class="dot"></span><span id="sheet-status">Listening</span></div>
+  <div id="sheet-text" class="sheet-text">Say what you need</div>
+  <button id="sheet-cancel" class="link-btn">Cancel</button>
 </div>
 
 <div id="toast" class="toast" hidden></div>
 
-<dialog id="menu">
+<dialog id="menu" class="menu">
   <button data-action="rename">Rename list</button>
-  <button data-action="color">Change colour</button>
-  <button data-action="clear-history">Clear history</button>
+  <button data-action="clear-history">Forget bought items</button>
   <button data-action="delete-list" class="danger">Delete list</button>
   <hr>
   <button data-action="settings">Settings</button>
-  <button data-action="export">Export JSON</button>
-  <button data-action="import">Import JSON</button>
-  <button data-action="close">Close</button>
+  <button data-action="export">Export backup</button>
+  <button data-action="import">Import backup</button>
 </dialog>
 
-<dialog id="settings">
+<dialog id="settings" class="panel">
   <h2>Settings</h2>
-  <label class="field">
-    <span>Voice engine</span>
-    <select id="set-engine">
-      <option value="rules">Browser speech + rules (free)</option>
-      <option value="llm">Browser speech + OpenRouter LLM</option>
-    </select>
-  </label>
   <label class="field">
     <span>OpenRouter API key</span>
     <input id="set-key" type="password" placeholder="sk-or-…">
   </label>
-  <label class="field">
-    <span>LLM model</span>
-    <input id="set-model" placeholder="google/gemini-3.1-flash-lite">
-  </label>
-  <label class="field check">
-    <input id="set-read" type="checkbox"> <span>Speak confirmations</span>
-  </label>
-  <p class="hint">Say: "add milk, eggs and bread" · "tick off milk" · "remove eggs" · "new list hardware" · "open groceries" · "undo"</p>
+  <p class="hint">Needed for voice understanding and photos. Without it, spoken words are added as typed.</p>
+  <p class="hint">Try: "add milk, eggs and bread" · "tick off milk" · "remove eggs" · "new list hardware" · "open groceries" · "undo"</p>
   <div class="row">
-    <button id="settings-save" class="text-btn">Save</button>
-    <button id="settings-close" class="text-btn">Close</button>
+    <button id="settings-close" class="link-btn">Close</button>
+    <button id="settings-save" class="pill-btn">Save</button>
   </div>
 </dialog>
 

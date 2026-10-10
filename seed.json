@@ -1,0 +1,62 @@
+{
+  "lists": [
+    {
+      "name": "Shopping list",
+      "items": [
+        {
+          "name": "Water",
+          "active": true
+        },
+        {
+          "name": "Sardines",
+          "active": true
+        },
+        {
+          "name": "Meat",
+          "active": false,
+          "count": 1
+        },
+        {
+          "name": "Bicarbonate of soda",
+          "active": false,
+          "count": 1
+        },
+        {
+          "name": "Eggs",
+          "active": false,
+          "count": 1
+        },
+        {
+          "name": "Washing liquid",
+          "active": false,
+          "count": 1
+        },
+        {
+          "name": "Sugar",
+          "active": false,
+          "count": 1
+        },
+        {
+          "name": "Salt",
+          "active": false,
+          "count": 1
+        },
+        {
+          "name": "Charcoal",
+          "active": false,
+          "count": 1
+        },
+        {
+          "name": "Butter",
+          "active": false,
+          "count": 1
+        },
+        {
+          "name": "Peanut butter",
+          "active": false,
+          "count": 1
+        }
+      ]
+    }
+  ]
+}
