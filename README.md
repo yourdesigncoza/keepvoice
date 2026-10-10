@@ -1,3 +1,5 @@
+<img width="1140" height="1065" alt="image" src="https://github.com/user-attachments/assets/bae9436a-8904-4ae9-9126-36e2c6212216" />
+
 # KeepVoice
 
 Single-user shopping list in the spirit of Google Keep, with three ways in: type, speak, or photograph the product.
