@@ -121,7 +121,6 @@ main { padding: 4px 20px 0; max-width: 560px; margin: 0 auto; }
 }
 .hero .preview .more { background: rgba(255,255,255,.25); color: var(--on-orange); }
 .hero .preview .more::before { display: none; }
-.hero .meta { font-size: 14px; opacity: .8; margin-bottom: 10px; }
 .hero .bought {
   display: flex;
   align-items: center;
@@ -183,7 +182,6 @@ main { padding: 4px 20px 0; max-width: 560px; margin: 0 auto; }
 }
 .card .preview .more { background: transparent; color: var(--muted); padding-left: 2px; }
 .card .preview .more::before { display: none; }
-.card .meta { color: var(--muted); font-size: 14px; display: flex; justify-content: space-between; }
 
 .card.new {
   justify-content: center;

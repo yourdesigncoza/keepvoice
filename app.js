@@ -320,11 +320,9 @@ const svg = (markup) => { const t = el('template'); t.innerHTML = markup; return
 const ICON_TICK = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7"/></svg>';
 const ICON_X = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>';
 
-const fmtDate = (ts) => ts ? new Date(ts).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' }) : '';
 const plural = (n, word) => `${n} ${word}${n === 1 ? '' : 's'}`;
 const activeOf = (list) => list.items.filter((i) => i.active).sort((a, b) => a.created - b.created);
 const historyOf = (list) => list.items.filter((i) => !i.active).sort((a, b) => b.lastDone - a.lastDone);
-const lastTouched = (list) => Math.max(list.created, ...list.items.map((i) => Math.max(i.created, i.lastDone || 0)));
 
 let toastTimer;
 function toast(msg) {
@@ -382,7 +380,6 @@ function renderHome(view) {
     view.append(el('div', { className: 'hero', role: 'button', tabIndex: 0, on: { click: () => openHero(false), keydown: (e) => { if (e.key === 'Enter') openHero(false); } } },
       el('p', { className: 'card-title' }, hero.name),
       previewOf(hero, 4),
-      el('div', { className: 'meta' }, fmtDate(lastTouched(hero))),
       bought ? el('button', { className: 'bought', on: { click: (e) => { e.stopPropagation(); openHero(true); } } },
         el('span', {}, `${bought} bought before · tap to re-add`), el('span', {}, '›')) : null));
   }
@@ -392,8 +389,7 @@ function renderHome(view) {
     if (l === hero) continue;
     cards.append(el('button', { className: 'card', on: { click: () => go('list/' + l.id) } },
       el('p', { className: 'card-title' }, l.name),
-      previewOf(l, 3),
-      el('div', { className: 'meta' }, el('span', {}, fmtDate(lastTouched(l))))));
+      previewOf(l, 3)));
   }
   cards.append(el('button', { className: 'card new', on: { click: newListPrompt } }, '+ New list'));
   view.append(cards);
