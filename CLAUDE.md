@@ -16,33 +16,44 @@ node --check app.js                # the only "build" check there is
 ```
 
 There are no tests. Verify behaviour in a browser at phone width (412x915). `window.KeepVoice` exposes
-`handleUtterance(text)`, `handlePhoto(file)`, `execute(actions)`, `state` for console-driven checks
-without a mic or camera.
+`handleUtterance(text)`, `handlePhoto(file)`, `execute(actions)`, `fallbackActions(text)`, `state` for
+console-driven checks without a mic or camera.
 
-Every deploy needs a bump of `KV_VERSION` in `version.js`. It is the only version string: `sw.js` imports it for the
-cache name (so the browser sees a changed worker and swaps caches) and Settings displays it. Without the bump,
-installed phones keep the old files.
+## Shipping a change
+
+- Every deploy needs a bump of `KV_VERSION` in `version.js`. It is the only version string: `sw.js` imports it for
+  the cache name, `app.js` shows it in Settings and uses it for the "Updated to x" toast (`keepvoice.seen`).
+  Without the bump, installed phones keep the old files.
+- Any new static file must be added to `ASSETS` in `sw.js` or it will not be available offline.
+- Update flow: the worker is network-first with cache fallback, calls `skipWaiting` + `clients.claim` on install,
+  and `app.js` reloads the page on `controllerchange`. "Check for update" in Settings just calls `reg.update()`.
 
 ## Architecture
 
 `app.js` is one IIFE, read top to bottom:
 
 1. **State** – `{ lists, settings: { key }, lastList }` under `localStorage['keepvoice.v1']`. `snapshot()` before
-   any mutation feeds an in-memory undo stack.
+   any mutation feeds an in-memory undo stack (depth 15, lost on reload).
 2. **Mutations** – `createList`, `addItems`, `tickItem`, `removeItem`. Ticking never deletes: the item flips to
    `active:false`, `count++`, `lastDone`, and shows as a "bought before" chip that re-activates on tap.
-3. **`execute(actions)`** – the single entry point for changing data. Voice, photo, typed input and the model all
-   produce `{type: add|tick|untick|remove|clear|new_list|open_list|undo, items?, list?, name?}` and go through here.
-   Item and list names are matched fuzzily (`score`/`best`), so model output does not have to be exact.
-4. **The model** – one OpenRouter call (`MODEL`, hardcoded) with `response_format: json_object`. `interpret(text)`
-   turns speech into actions; `identify(dataUrl)` turns a photo into `{label, sure}`. Both prompts carry `SA_NOTE`
-   (the user shops in South Africa; fix mangled brand names) and `listContext()` (current list, to-buy, bought-before)
-   so the model prefers names already in the lists. No key, offline, or a failed call falls back to
-   `fallbackActions`: the words are split on commas/"and" and added as items.
-5. **Speech** – browser `SpeechRecognition`, `lang: en-ZA`, one utterance per mic tap. Works in Chrome on Android;
-   Samsung Internet is unreliable, so the README tells the user to install from Chrome.
+3. **`execute(actions)`** – the entry point for everything that comes from words: voice, photo, the model and the
+   no-key fallback all produce `{type: add|tick|untick|remove|clear|new_list|open_list|undo, items?, list?, name?}`
+   and go through here. Item and list names are matched fuzzily (`score`/`best`), so model output does not have to
+   be exact. An `add` whose `list` matches nothing creates that list. Direct UI taps (tick button, delete, chip,
+   typed add) call the mutations themselves with the same `snapshot(); mutate; save(); render()` sequence.
+4. **The model** – one OpenRouter call (`MODEL`, hardcoded) with `response_format: json_object`, temperature 0.
+   `interpret(text)` turns speech into actions; `identify(dataUrl)` turns a shrunk photo (max 1024px JPEG) into
+   `{label, sure}`. Both prompts carry `SA_NOTE` (the user shops in South Africa; fix mangled brand names) and
+   `listContext()` (all list names, current list, to-buy, bought-before). The interpret prompt does the list routing:
+   every `add` names a list, a list the user says wins, otherwise the model picks the list whose kind fits the item
+   or invents a short name for `execute` to create. No key, offline, or a failed call falls back to
+   `fallbackActions`: a leading verb is stripped and the words are split on commas/"and"/"plus"/"also" into items.
+5. **Speech** – browser `SpeechRecognition`, `lang: en-ZA`, one utterance per mic tap, interim text shown in the
+   bottom sheet. Works in Chrome on Android; Samsung Internet is unreliable, so the README tells the user to install
+   from Chrome.
 6. **UI** – hash routing (`#` home, `#list/<id>`), DOM built with the `el()` helper, full re-render on every change.
-   Home shows the last-used list as the orange hero card; the rest are grid cards.
+   Home shows the last-used list as the orange hero card; the rest are grid cards. Menu actions dispatch on
+   `data-action` in `menuAction`.
 
 Backup import goes through `mergeLists`, which merges by list id or name and by item name, so importing the same
 file twice is harmless.
