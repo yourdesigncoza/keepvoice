@@ -445,6 +445,7 @@ dialog h2 { margin: 10px 10px 16px; font-size: 24px; font-weight: 300; }
 }
 .menu button:active { background: var(--pill); }
 .menu button.danger { color: var(--danger); }
+.menu button.muted { color: var(--muted); }
 .menu hr { border: 0; border-top: 1px solid var(--line); margin: 6px 8px; }
 
 .field { display: block; margin: 0 10px 14px; }

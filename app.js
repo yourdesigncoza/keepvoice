@@ -494,12 +494,19 @@ function menuAction(action) {
       if (confirm(`Delete "${list.name}"?`)) { snapshot(); state.lists = state.lists.filter((l) => l !== list); save(); go(''); }
       break;
     case 'settings': $('#set-key').value = state.settings.key; $('#settings').showModal(); break;
+    case 'install': if (installPrompt) { installPrompt.prompt(); installPrompt = null; $('#install-item').hidden = true; } break;
     case 'export': exportJSON(); break;
     case 'import': $('#import-file').click(); break;
   }
 }
 
 // ---------- wiring ----------
+// Chrome offers the install prompt once per visit; keep it for the menu's "Install app".
+let installPrompt = null;
+window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); installPrompt = e; $('#install-item').hidden = false; });
+window.addEventListener('appinstalled', () => { installPrompt = null; $('#install-item').hidden = true; toast('Installed'); });
+// Tapping the dark backdrop closes any dialog (phones have no Esc key).
+document.addEventListener('click', (e) => { if (e.target instanceof HTMLDialogElement && e.target.open) e.target.close(); });
 $('#back-btn').addEventListener('click', () => go(''));
 $('#menu-btn').addEventListener('click', () => $('#menu').showModal());
 $('#menu').addEventListener('click', (e) => {
