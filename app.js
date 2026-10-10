@@ -377,10 +377,14 @@ function renderHome(view) {
 
   const hero = currentList();
   if (hero) {
-    view.append(el('button', { className: 'hero', on: { click: () => go('list/' + hero.id) } },
+    const bought = historyOf(hero).length;
+    const openHero = (anchor) => { go('list/' + hero.id); if (anchor) $('.history')?.scrollIntoView({ behavior: 'smooth' }); };
+    view.append(el('div', { className: 'hero', role: 'button', tabIndex: 0, on: { click: () => openHero(false), keydown: (e) => { if (e.key === 'Enter') openHero(false); } } },
       el('p', { className: 'card-title' }, hero.name),
       previewOf(hero, 4),
-      el('div', { className: 'meta' }, el('span', {}, fmtDate(lastTouched(hero))), el('span', {}, plural(historyOf(hero).length, 'bought item')))));
+      el('div', { className: 'meta' }, fmtDate(lastTouched(hero))),
+      bought ? el('button', { className: 'bought', on: { click: (e) => { e.stopPropagation(); openHero(true); } } },
+        el('span', {}, `${bought} bought before · tap to re-add`), el('span', {}, '›')) : null));
   }
 
   const cards = el('div', { className: 'cards' });
