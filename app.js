@@ -438,7 +438,7 @@ function exportJSON() {
   document.body.append(a); a.click(); a.remove();
 }
 
-// Merge lists by id, else by name, so a seed or backup never duplicates what is already there.
+// Merge lists by id, else by name, so a backup never duplicates what is already there.
 function mergeLists(lists) {
   for (const l of lists) {
     const idx = state.lists.findIndex((x) => x.id === l.id || key(x.name) === key(l.name));
@@ -467,19 +467,6 @@ function importJSON(file) {
     catch (e) { toast('Import failed: ' + e.message); }
   };
   reader.readAsText(file);
-}
-
-async function loadSeed() {
-  try {
-    const res = await fetch('seed.json', { cache: 'no-store' });
-    if (!res.ok) throw new Error(res.status);
-    const data = await res.json();
-    for (const l of data.lists) {
-      l.id = l.id || uid(); l.created = l.created || Date.now();
-      l.items = l.items.map((i) => ({ id: uid(), count: 0, created: Date.now(), ...i, lastDone: i.active ? null : (i.lastDone || Date.now()) }));
-    }
-    importData(data, 'Loaded');
-  } catch (e) { toast('Seed failed: ' + e.message); }
 }
 
 function menuAction(action) {
@@ -545,10 +532,7 @@ document.addEventListener('keydown', (e) => {
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
 
 // exposed for console testing
-window.KeepVoice = { execute, state, handleUtterance, handlePhoto, fallbackActions, loadSeed };
+window.KeepVoice = { execute, state, handleUtterance, handlePhoto, fallbackActions };
 
-// First run loads the starter list. "#seed" merges seed.json into an existing install without duplicating.
-if (location.hash === '#seed') { history.replaceState(null, '', location.pathname); loadSeed(); }
-else if (!state.lists.length) loadSeed();
 route();
 })();

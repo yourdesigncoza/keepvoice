@@ -7,7 +7,7 @@ Static PWA, no backend. Data stays on the phone.
 - Mic: Chrome's speech recognition (`en-ZA`), then one OpenRouter call turns the words into list actions.
 - Camera: photo is shrunk on the phone and the same model names the product, brand and pack size.
 - Without an API key, or offline, spoken words are added as plain items.
-- Backup: Export / Import JSON from the menu. `seed.json` loads on first run; `#seed` merges it again without duplicates.
+- Backup: Export / Import JSON from the menu. Import merges by list and item name, so it never duplicates.
 
 ## Voice commands
 
