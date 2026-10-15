@@ -20,6 +20,21 @@ Live at https://yourdesigncoza.github.io/keepvoice/
 2. Menu (⋮) → **Install app**, or Chrome's own "Add to Home screen".
 3. Menu → **Settings** → paste an OpenRouter API key → Save. Voice understanding and photos need it.
 
+## Share it
+
+Anyone can use KeepVoice: send them the link above. There is no account and no server, so:
+
+- Each person installs it on their own phone (see **Install on the phone**). Their lists stay in their own browser
+  and nobody else can see them.
+- Each person needs their own OpenRouter API key from https://openrouter.ai/keys and pays for their own calls.
+  Without one, spoken words are still added as plain items, but lists are not picked for them and photos do not work.
+- Lists are not shared live between people. To hand someone your lists, **Export backup** from the menu and send
+  them the file; they use **Import backup** and it merges into what they have. The file holds every list but not
+  your key.
+- Speech is set to South African English (`en-ZA`) and the model fixes South African brand names, so it suits
+  shoppers in South Africa best.
+- New versions reach everyone automatically (see **Updates**).
+
 ## Voice commands
 
 - `add milk, eggs and bread` / `I need butter` / just `tomatoes`
