@@ -52,7 +52,7 @@ console-driven checks without a mic or camera.
    bottom sheet. Works in Chrome on Android; Samsung Internet is unreliable, so the README tells the user to install
    from Chrome.
 6. **UI** – hash routing (`#` home, `#list/<id>`), DOM built with the `el()` helper, full re-render on every change.
-   Home shows the last-used list as the orange hero card; the rest are grid cards. Menu actions dispatch on
+   Home shows the last-used list as the accent-coloured hero card; the rest are grid cards. Menu actions dispatch on
    `data-action` in `menuAction`.
 
 Backup import goes through `mergeLists`, which merges by list id or name and by item name, so importing the same

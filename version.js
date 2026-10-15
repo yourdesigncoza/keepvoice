@@ -1,1 +1,1 @@
-self.KV_VERSION = '1.1.2';
+self.KV_VERSION = '1.1.3';
