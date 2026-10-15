@@ -60,8 +60,8 @@ file twice is harmless.
 
 ## Conventions worth keeping
 
-- The user is ~60 and reads on a phone: type scale is deliberately large (base 18px, items 20px) and tap targets
-  are 40px+. Do not shrink them to fit more on screen.
+- The user is ~60 and reads on a phone: type scale is deliberately large (base 18px, item rows 17px via `--fs-row`)
+  and tap targets are 40px+. Do not shrink them to fit more on screen.
 - Dialogs are `<dialog>` with `showModal()`. A document-level click handler closes any dialog when the backdrop is
   tapped (phones have no Esc). Keep that when adding dialogs.
 - No nested buttons: the hero card is a `div[role=button]` because it contains the bought-before button.
