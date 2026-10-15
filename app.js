@@ -428,7 +428,7 @@ function renderList(view, list) {
   if (history.length) {
     const chips = el('div', { className: 'chips' }, ...history.map((item) =>
       el('button', { className: 'chip', on: { click: () => { snapshot(); item.active = true; item.created = Date.now(); save(); render(); } } },
-        item.name, el('small', {}, '×' + item.count))));
+        el('span', {}, item.name))));
     view.append(el('section', { className: 'history' }, el('h3', {}, 'Bought before'), chips));
   }
   $('#history-list').replaceChildren(...history.map((i) => el('option', { value: i.name })));
